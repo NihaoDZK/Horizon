@@ -339,7 +339,7 @@ Horizon 已经支持完整的日报流程：多源抓取、AI 打分、去重、
 
 Horizon 是一个业余时间维护的开源、自托管项目。如果 Horizon 帮你搭建了更好的个人新闻雷达、团队简报，或为你的 AI 平台提供了真实工作流测试场景，欢迎赞助本项目。
 
-想出现在这里？欢迎[创建一个 Issue](https://github.com/Thysrael/Horizon/issues/new)，说明你希望赞助 Horizon。
+想出现在这里？欢迎[创建一个 Issue](https://github.com/Thysrael/Horizon/issues/new) 或者[发邮件](mailto:thysrael@163.com)给我，说明你希望赞助 Horizon。
 
 Sponsor 可以获得项目内的展示机会，例如：
 

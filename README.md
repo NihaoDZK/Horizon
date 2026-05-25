@@ -337,7 +337,7 @@ Want to share valuable source discoveries with the Horizon community? Please sub
 
 Horizon is an open-source, self-hosted project maintained in spare time. If Horizon helps you build a better personal news radar, run a team briefing, or test your AI platform with real workflows, sponsorship is welcome.
 
-Want to appear here? Please [open an issue](https://github.com/Thysrael/Horizon/issues/new) and mention that you are interested in sponsoring Horizon.
+Want to appear here? Please [open an issue](https://github.com/Thysrael/Horizon/issues/new) or [mail to me](mailto:thysrael@163.com) and mention that you are interested in sponsoring Horizon.
 
 Sponsors can get visibility in the project, such as:
 
