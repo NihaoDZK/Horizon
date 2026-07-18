@@ -162,7 +162,7 @@
   },
   "webhook": {
     "enabled": false,
-    "url_env": "HORIZON_WEBHOOK_URL",
+    "url_env": "HORIZON_WEBHOOK_URL_DISABLED",
     "delivery": "summary",
     "overview_position": "first",
     "platform": "generic",
