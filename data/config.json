@@ -1,205 +1,57 @@
-{
-  "version": "1.0",
-  "ai": {
-    "provider": "gemini",
-    "model": "gemini-2.0-flash",
-    "api_key_env": "GOOGLE_API_KEY",
-    "temperature": 0.3,
-    "max_tokens": 4096,
-    "throttle_sec": 0,
-    "analysis_concurrency": 1,
-    "enrichment_concurrency": 1
-  },
-  "email": {
-    "enabled": true,
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 465,
-    "imap_server": "imap.gmail.com",
-    "imap_port": 993,
-    "email_address": "dengzhaokeng@gmail.com",
-    "sender_name": "Horizon Daily",
-    "subscribe_keyword": "SUBSCRIBE",
-    "unsubscribe_keyword": "UNSUBSCRIBE"
-  },
-  "sources": {
-    "github": [
-      {
-        "type": "user_events",
-        "username": "torvalds",
-        "enabled": false
-      },
-      {
-        "type": "repo_releases",
-        "owner": "astral-sh",
-        "repo": "uv",
-        "enabled": false
-      }
-    ],
-    "hackernews": {
-      "enabled": false,
-      "fetch_top_stories": 20,
-      "min_score": 100
-    },
-    "rss": [
-      {
-        "name": "OpenAI Blog",
-        "url": "https://openai.com/blog/rss",
-        "enabled": true,
-        "category": "ai"
-      },
-      {
-        "name": "Google DeepMind Blog",
-        "url": "https://deepmind.google/blog/rss",
-        "enabled": true,
-        "category": "ai"
-      },
-      {
-        "name": "MIT Technology Review - AI",
-        "url": "https://www.technologyreview.com/feed/ai/",
-        "enabled": true,
-        "category": "ai"
-      },
-      {
-        "name": "IEEE Spectrum - Robotics",
-        "url": "https://spectrum.ieee.org/feeds/robotics",
-        "enabled": true,
-        "category": "robotics"
-      },
-      {
-        "name": "arXiv - Artificial Intelligence",
-        "url": "http://export.arxiv.org/rss/cs.AI",
-        "enabled": true,
-        "category": "ai"
-      },
-      {
-        "name": "arXiv - Robotics",
-        "url": "http://export.arxiv.org/rss/cs.RO",
-        "enabled": true,
-        "category": "robotics"
-      }
-    ],
-    "reddit": {
-      "enabled": false,
-      "subreddits": [
-        {
-          "subreddit": "MachineLearning",
-          "enabled": false,
-          "sort": "hot",
-          "time_filter": "day",
-          "fetch_limit": 15,
-          "min_score": 50
-        }
-      ],
-      "users": [
-        {
-          "username": "iamthatis",
-          "enabled": false,
-          "sort": "new",
-          "fetch_limit": 10
-        }
-      ],
-      "fetch_comments": 5
-    },
-    "twitter": {
-      "enabled": false,
-      "users": ["karpathy", "ylecun"],
-      "fetch_limit": 10,
-      "fetch_reply_text": false,
-      "max_replies_per_tweet": 3,
-      "max_tweets_to_expand": 10,
-      "reply_min_likes": 5
-    },
-    "openbb": {
-      "enabled": false,
-      "fetch_filings": false,
-      "filings_provider": "sec",
-      "watchlists": [
-        {
-          "name": "megacaps",
-          "enabled": false,
-          "provider": "yfinance",
-          "fetch_limit": 20,
-          "category": "equities",
-          "symbols": ["AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSLA"]
-        }
-      ]
-    },
-    "ossinsight": {
-      "enabled": false,
-      "period": "past_24_hours",
-      "languages": ["All", "Python", "TypeScript"],
-      "keywords": [],
-      "min_stars": 10,
-      "max_items": 30
-    },
-    "gdelt": {
-      "enabled": false,
-      "query": "artificial intelligence",
-      "mode": "ArtList",
-      "max_records": 75,
-      "timespan": null,
-      "language": null,
-      "country": null,
-      "category": "news"
-    },
-    "google_news": {
-      "enabled": false,
-      "query": "artificial intelligence",
-      "language": "en",
-      "country": "US",
-      "ceid": null,
-      "max_results": 100,
-      "category": "news"
-    }
-  },
-  "filtering": {
-    "ai_score_threshold": 4.0,
-    "time_window_hours": 24,
-    "max_items": null,
-    "category_groups": {},
-    "default_group": "other",
-    "default_group_limit": null
-  },
-  "webhook": {
-    "enabled": false,
-    "url_env": "HORIZON_WEBHOOK_URL_DISABLED",
-    "delivery": "summary",
-    "overview_position": "first",
-    "platform": "generic",
-    "layout": "markdown",
-    "fallback_layout": "markdown",
-    "languages": null,
-    "request_body": {
-      "msg_type": "interactive",
-      "card": {
-        "schema": "2.0",
-        "config": {
-          "wide_screen_mode": true
-        },
-        "header": {
-          "title": {
-            "tag": "plain_text",
-            "content": "#{message_title}"
-          },
-          "template": "blue"
-        },
-        "body": {
-          "elements": [
-            {
-              "tag": "markdown",
-              "content": "Horizon生成结果: #{result}\nHorizon日报重要资讯数量: #{important_items}/#{all_items}"
-            },
-            {
-              "tag": "hr"
-            },
-            {
-              "tag": "markdown",
-              "content": "#{summary}"
-            }
-          ]
-        }
-      }
-    },
-    "headers": ""
-  }
-}
+name: Daily Horizon Summary
+
+on:
+  schedule:
+    # GitHub scheduled workflows use UTC. 20:00 UTC is 04:00 Asia/Shanghai;
+    # this intentionally runs early to offset the observed schedule delay.
+    - cron: '0 23 * * *'
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  daily-summary:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to commit changes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.26"
+
+      - name: Install dependencies
+        run: uv sync
+
+      # 已删除 Prepare config 步骤，因为 data/config.json 已存在且配置正确
+
+      - name: Run Horizon
+        env:
+          # 你使用的是 Gemini，只需确保 GOOGLE_API_KEY 已配置
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          LWN_KEY: ${{ secrets.LWN_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          HORIZON_WEBHOOK_URL: ${{ secrets.HORIZON_WEBHOOK_URL }}
+        run: uv run horizon --hours 24
+
+      - name: Set current date as environment variable
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: true  # Keep existing summaries on gh-pages branch
+          commit_message: "📝 Daily Summary: ${{ env.DATE }}"
+          publish_branch: gh-pages
+          enable_jekyll: true
